@@ -10,7 +10,7 @@
         queue.Enqueue(100);
         var value = queue.Dequeue();
         Console.WriteLine(value);
-        // Defect(s) Found:
+        // Defect(s) Found:100
 
         Console.WriteLine("------------");
 
@@ -23,12 +23,12 @@
         queue.Enqueue(300);
         queue.Enqueue(400);
         value = queue.Dequeue();
-        Console.WriteLine(value);
+        Console.WriteLine(value); // 200
         value = queue.Dequeue();
-        Console.WriteLine(value);
+        Console.WriteLine(value); // 300
         value = queue.Dequeue();
-        Console.WriteLine(value);
-        // Defect(s) Found: 
+        Console.WriteLine(value); // 400
+        // Defect(s) Found: 200, 300, 400
 
         Console.WriteLine("------------");
 
@@ -66,8 +66,9 @@
         if (_queue.Count <= 0)
             throw new IndexOutOfRangeException();
 
-        var value = _queue[1];
-        _queue.RemoveAt(1);
+        var value = _queue[_queue.Count - 1];
+        _queue.RemoveAt(_queue.Count - 1);
+        
         return value;
     }
 }
