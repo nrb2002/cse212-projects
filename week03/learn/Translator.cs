@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+
+
 public class Translator
 {
     public static void Run()
@@ -11,6 +15,7 @@ public class Translator
         Console.WriteLine(englishToGerman.Translate("Train")); // ???
     }
 
+    // Create a dictionary to store words and their translations
     private Dictionary<string, string> _words = new();
 
     /// <summary>
@@ -25,6 +30,11 @@ public class Translator
     public void AddWord(string fromWord, string toWord)
     {
         // ADD YOUR CODE HERE
+
+        // Add the original word and its translation to the dictionary
+
+        // If the word already exists, update its transation
+        _words[fromWord] = toWord;
     }
 
     /// <summary>
@@ -35,6 +45,16 @@ public class Translator
     public string Translate(string fromWord)
     {
         // ADD YOUR CODE HERE
-        return "";
+        // return "";
+
+        // Check whether the dictionary contains the requested word
+        if(_words.TryGetValue(fromWord, out string translation))
+        {
+            // Return the translation if the word exists
+            return translation;
+        }
+
+        // Return "???" if no translation is available
+        return "???";
     }
 }
