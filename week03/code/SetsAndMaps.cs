@@ -22,7 +22,36 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // return [];
+
+        // Create an empty Set to store words we have already visited.
+        HashSet<string> visitedWords = new HashSet<string>();
+
+        // Create an empty list to store the symmetric pairs.
+        List<string> symmetricPairs = new List<string>();
+
+        // Loop through each word in the input list.
+        foreach (string word in words)
+        {
+            // Reverse the current word to get its possible matching pair.
+            string reversedWord = new string(word.Reverse().ToArray());
+
+            // Check whether the reversed word already exists in the HashSet.
+            if (visitedWords.Contains(reversedWord))
+            {
+                // We have found a symmetric pair. Add it to the results.
+                symmetricPairs.Add($"{reversedWord} & {word}");
+            }
+            else
+            {
+                // Add the current word to the HashSet.
+                visitedWords.Add(word);
+            }
+        }
+
+        // Return the list of pairs.
+        return symmetricPairs.ToArray();
+
     }
 
     /// <summary>
@@ -39,12 +68,32 @@ public static class SetsAndMaps
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
+
+
+        // Read the file line by line.
         foreach (var line in File.ReadLines(filename))
         {
+            // Split each line into columns.
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+
+            //Extract column 4(index 3, because C# arrays start at index 0).
+            string degree = fields[3].Trim();
+
+            // Check whether the degree already exists in the dictionary.
+            if (degrees.ContainsKey(degree))
+            {
+                // If it does, increment the count for that degree.
+                degrees[degree]++;
+            }
+            // Otherwise, add it to the dictionary with a count of 1.
+            else
+            {
+                degrees.Add(degree, 1);
+            }
         }
 
+        // Return the dictionary containing the degree summary.
         return degrees;
     }
 
@@ -66,8 +115,49 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Remove spaces and convert both words to lowercase.
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        // If the lengths are different, they cannot be anagrams.
+        if (word1.Length != word2.Length)
+        {
+            return false;
+        }
+
+        // Create a dictionary to count each letter.
+        Dictionary<char, int> letters = new Dictionary<char, int>();
+
+        // Count the letters in the first word.
+        foreach (char letter in word1)
+        {
+            if (letters.ContainsKey(letter))
+            {
+                letters[letter]++;
+            }
+            else
+            {
+                letters.Add(letter, 1);
+            }
+        }
+
+        // Compare the letters in the second word.
+        foreach (char letter in word2)
+        {
+            if (!letters.ContainsKey(letter))
+            {
+                return false;
+            }
+
+            letters[letter]--;
+
+            if (letters[letter] < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -84,6 +174,7 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
@@ -96,11 +187,23 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
-        // 3. Return an array of these string descriptions.
-        return [];
+        // Create a list to store the earthquake descriptions.
+        var summaries = new List<string>();
+
+        // Go through each earthquake in the collection.
+        foreach (var feature in featureCollection.Features)
+        {
+            // Get the earthquake location and magnitude.
+            string place = feature.Properties.Place;
+            string magnitude = feature.Properties.Mag?.ToString(
+                System.Globalization.CultureInfo.InvariantCulture) ?? "Unknown";
+
+            // Create a formatted description.
+            summaries.Add($"{place} - Mag {magnitude}");
+        }
+
+        // Convert the list into an array and return it.
+        return summaries.ToArray();
     }
+
 }
