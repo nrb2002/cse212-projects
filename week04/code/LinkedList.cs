@@ -49,7 +49,7 @@ public class LinkedList : IEnumerable<int>
             _tail.Next = newNode; // Connect the previous tail to the new node
             _tail = newNode; // Update the tail to point to the new node
         }
-    }s
+    }
 
 
     /// <summary>
